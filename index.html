@@ -1,0 +1,98 @@
+<!DOCTYPE html> 
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Covid-19 by County</title>
+  <style>
+    html, body, #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%; 
+    }
+  </style>
+  
+    <link rel="stylesheet" href="https://js.arcgis.com/4.14/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.14/"></script>
+  
+  <script>  
+    require([
+      "esri/Map",
+      "esri/views/MapView",
+    "esri/layers/FeatureLayer"
+    ], function(Map, MapView, FeatureLayer) {  
+
+      var map = new Map({
+        basemap: "topo-vector"
+      });
+
+      var view = new MapView({
+        container: "viewDiv",
+        map: map,
+        center: [-98.5795, 39.8283],
+        zoom: 4
+      });
+      
+        
+        var popupCovid = {
+        "title": "{Combined_Key}",
+        "content": [{
+          "type": "fields",
+          "fieldInfos": [
+            {
+              "fieldName": "Confirmed",
+              "label": "Confirmed",
+              "isEditable": true,
+              "tooltip": "",
+              "visible": true,
+              "format": null,
+              "stringFieldOption": "text-box"
+            },
+              {
+              "fieldName": "Recovered",
+              "label": "Recovered",
+              "isEditable": true,
+              "tooltip": "",
+              "visible": true,
+              "format": null,
+              "stringFieldOption": "text-box"
+            },
+              {
+              "fieldName": "Active",
+              "label": "Currently Infected",
+              "isEditable": true,
+              "tooltip": "",
+              "visible": true,
+              "format": null,
+              "stringFieldOption": "text-box"
+            },
+            {
+              "fieldName": "Deaths",
+              "label": "Dead",
+              "isEditable": true,
+              "tooltip": "",
+              "visible": true,
+              "format": null,
+              "stringFieldOption": "text-box"
+            },
+          ]
+        }]
+      }
+
+      var covid = new FeatureLayer({
+        url: "https://services1.arcgis.com/0MSEUqKaxRlEPj5g/arcgis/rest/services/ncov_cases_US/FeatureServer/0/query?outFields=*&where=1%3D1",
+        outFields: ["Combined_Key","Confirmed","Recovered","Active","Deaths"],
+        popupTemplate: popupCovid
+      });
+
+      map.add(covid,0);
+
+    });
+    
+  </script>
+</head>
+<body>
+  <div id="viewDiv"></div>
+</body>
+</html>
